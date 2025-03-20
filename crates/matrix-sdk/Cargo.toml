@@ -16,7 +16,7 @@ features = ["docsrs"]
 rustdoc-args = ["--cfg", "docsrs"]
 
 [features]
-default = ["e2e-encryption", "automatic-room-key-forwarding", "sqlite", "native-tls"]
+default = ["e2e-encryption", "automatic-room-key-forwarding", "sqlite", "native-tls", "unstable-msc4274"]
 testing = ["matrix-sdk-sqlite?/testing", "matrix-sdk-indexeddb?/testing", "matrix-sdk-base/testing", "wiremock", "matrix-sdk-test", "assert_matches2"]
 
 e2e-encryption = [
@@ -51,7 +51,7 @@ docsrs = ["e2e-encryption", "sqlite", "indexeddb", "sso-login", "qrcode"]
 experimental-share-history-on-invite = []
 
 # Add support for inline media galleries via msgtypes
-unstable-msc4274 = ["matrix-sdk-base/unstable-msc4274"]
+unstable-msc4274 = ["ruma/unstable-msc4274", "matrix-sdk-base/unstable-msc4274"]
 
 [dependencies]
 anyhow = { workspace = true, optional = true }

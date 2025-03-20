@@ -258,6 +258,16 @@ pub enum DependentQueuedRequestKind {
         /// Information about the thumbnail, if present.
         thumbnail_info: Option<FinishUploadThumbnailInfo>,
     },
+
+    /// Finish a gallery upload.
+    #[cfg(feature = "unstable-msc4274")]
+    FinishGallery {
+        /// Local echo for the event (containing the local MXC URIs).
+        local_echo: RoomMessageEventContent,
+
+        /// Metadata about the gallery items
+        item_infos: Vec<FinishGalleryItemInfo>,
+    },
 }
 
 /// If parent_is_thumbnail_upload is missing, we assume the request is for a
@@ -283,6 +293,15 @@ pub struct FinishUploadThumbnailInfo {
     /// Used previously, kept for backwards compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub height: Option<UInt>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+/// Metadata for a gallery item on FinishGallery.
+pub struct FinishGalleryItemInfo {
+    /// Transaction id for the file upload.
+    pub file_upload: OwnedTransactionId,
+    /// Information about the thumbnail, if present.
+    pub thumbnail_info: Option<FinishUploadThumbnailInfo>,
 }
 
 /// A transaction id identifying a [`DependentQueuedRequest`] rather than its
@@ -440,6 +459,11 @@ impl DependentQueuedRequest {
             }
             DependentQueuedRequestKind::FinishUpload { .. } => {
                 // This one graduates into a new media event.
+                true
+            }
+            #[cfg(feature = "unstable-msc4274")]
+            DependentQueuedRequestKind::FinishGallery { .. } => {
+                // This one graduates into a new gallery event.
                 true
             }
         }
